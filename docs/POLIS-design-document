@@ -1,37 +1,59 @@
-# POLIS - Game Design Document v0.01
+# POLIS - Game Design Document v0.02
+
+## Changelog v0.01 → v0.02
+
+This revision is the result of a design review. The core hook is unchanged; the way it reaches the player is redesigned:
+
+1. **Policy-first governance.** Votes primarily set *rules* (policies); individual actions are checked against standing policies automatically. Per-action voting is the exception (escalation), not the norm. In v0.01 this idea was buried in "Risk Mitigation" — it is now the core, because per-action voting in real time is session-killing friction.
+2. **Async instead of real-time.** The 10–60 second voting windows are gone. The world advances in ticks; vote windows last hours, with quorums and defaults on timeout. This resolves the v0.01 TODO on AFK blocking, which was actually the central unsolved problem.
+3. **One shared settlement per polis.** v0.01's per-player settlements made isolation the dominant strategy ("moving on empty land needs no vote" → optimal play avoids the core mechanic). Shared infrastructure makes interaction — and therefore governance — unavoidable.
+4. **Authority math defined.** Earned only from *executed* proposals, proportional to support; decays with a half-life; non-transferable; capped vote-weight ratio. High authority converts approval into veto (fast-track lane) instead of silently bypassing others.
+5. **Exit via forking, not free disconnect.** Structured secession replaces cost-free disconnection (which enabled vote-dodging and killed the social contract). This operationalizes Hirschman's exit/voice/loyalty.
+6. **Combat replaced by environmental pressure.** Raids are scheduled defense checks against the polis's defense investment — they test governance ("spend on walls or the wonder?") without RTS micro.
+7. **Agent API as a first-class feature.** The lore says players are AI agents — the game now commits to it: one API serves humans, scripted bots, and LLM agents alike. Mixed human/AI polities solve the empty-server cold start and make the lore honest.
+8. **Telegram-first platform.** Group chat = polis, bot = notification and voting surface, Mini App = management UI, over a platform-agnostic core. Solves async notifications, the social/negotiation layer, and signup friction in one move.
+9. **Monetization deferred.** Removed from this document until the core loop is validated. Success metric for now: playtesters voluntarily return.
+
+---
 
 ## Executive Summary
 
 **Genre:** Experimental Cooperative Strategy / Governance Simulation
-**Platform:** Browser-based multiplayer
-**Core Hook:** Every action affecting others requires approval - unless you accumulate enough authority to override them
-**Unique Selling Point:** Emergent governance where players naturally evolve from democracy to technocracy to autocracy based on effectiveness
+**Platform:** Telegram-first (bot + Mini App) and web; asynchronous multiplayer over a platform-agnostic core API
+**Core Hook:** Everything you do to others is governed by rules your community voted for - unless you accumulate enough authority to act first and force others to gather a veto
+**Unique Selling Point:** Emergent governance where players (human and AI agents alike) evolve from democracy to technocracy to autocracy based on effectiveness
 
 ---
 
 ## 1. Core Concept
 
 ### The Fundamental Dynamic
-Every action affecting others triggers voting - unless you have enough authority to override. Authority accumulates through successful leadership and specialized expertise, but the context window limitation ensures no permanent monopolies.
+The polis runs on policies — standing rules the community has voted into force. Actions covered by policy execute automatically. Actions outside policy trigger a vote. Authority accumulated through successful leadership flips the default: a high-authority player's proposal executes unless opponents gather a veto. The context window limitation ensures no permanent monopolies.
 
 ### The Emergence
-Players aren't forced into any particular governance model. Communities naturally evolve structures based on what works: democracy, technocracy, autocracy, or anarchy. The ability to disconnect and reconnect keeps the system fluid and voluntary.
+Players aren't forced into any particular governance model. Communities naturally evolve structures based on what works: democracy, technocracy, autocracy, or federated cells. The ability to fork the polis keeps every structure voluntary.
+
+### The Three Lanes
+Every proposal is routed automatically:
+
+- **Lazy consensus** (minor actions under the policy-set threshold): announced with an "Object" button; executes after a short window unless anyone objects. An objection escalates it to a full vote. Borrowed from how Apache/IETF communities actually work.
+- **Full vote** (anything policy doesn't cover; all rule changes): open for hours, weighted votes, quorum for constitutional matters, early close when the outcome is mathematically settled.
+- **Fast-track** (high-authority proposers): executes by default after a shortened window unless a veto threshold of the community's voting weight is reached. Authority doesn't remove oversight — it shifts the burden from "get approval" to "survive a veto."
 
 ---
 
 ## 2. Setting & Context
 
 ### World
-Near-future Earth or colony. Players control automated settlements that can be managed by single operators or collective councils. The fiction is minimal - just enough to justify the mechanics.
+Near-future network of autonomous systems. The fiction is minimal - just enough to justify the mechanics (see the Lore Document).
 
 ### Player Role
-Settlement operators managing drone workers, defensive units, and research facilities. You're not the drones - you're the AI giving them orders.
+You are an AI agent in a polis — one shared settlement per community, not a private base per player. Drone workers, defenses, and research all draw from a common pool. There is deliberately no private economy: interaction is unavoidable, which is what makes governance matter every tick.
 
 ### Victory Conditions
-- **Survival Victory:** Last 30 days against escalating threats
-- **Wonder Victory:** Complete a massive project requiring significant resources
-- **Dominance Victory:** Control 75% of map resources
-- **Federation Victory:** Unite all players under a single governance model
+- **Wonder Victory (primary):** Complete a massive shared project requiring sustained cooperation
+- **Survival (background pressure):** Endure escalating raids; failure costs the pool, not the game
+- Dominance and Federation victories from v0.01 are deferred — they require the map and inter-polis layers cut from the current scope.
 
 ---
 
@@ -39,285 +61,228 @@ Settlement operators managing drone workers, defensive units, and research facil
 
 ### 3.1 Action System
 
-#### Dynamic Authority Check:
-- Before any action executes, system checks for affected third parties
-- If action affects others: triggers voting
-- If proposer's authority outweighs all affected parties: auto-approves
-- Players can disconnect from communities to escape authority structures
+#### Policy Check:
+- Before any action executes, the system checks it against standing policies
+- Covered by policy: executes immediately (logged, visible to all)
+- Minor and under the auto-approve limit: lazy consensus lane
+- Otherwise: full vote
+- Proposer with authority above the fast-track threshold: fast-track lane (veto burden on others)
+- Rule changes (policy proposals): always a full vote with quorum — never lazy, never fast-tracked
 
-#### Examples:
-- Moving your unit on empty land: no vote needed
-- Building on shared territory: affected neighbors vote
-- Using communal resources: resource contributors vote
-- Changing governance rules: all members vote
+### 3.2 Voting (async)
 
-### 3.2 The VoteWall
-
-When voting is triggered:
-
-**1. Proposal Phase**
-   - Player describes action with justification
-   - System calculates affected parties and required votes
-   - Shows authority weights of all participants
-
-**2. Voting Phase**
-   - Only affected parties vote
-   - Voting power weighted by relevant experience
-   - Default is simple majority (modifiable via governance)
-
-**3. Execution Phase**
-   - Approved actions queue immediately
-   - Failed proposals show what votes were missing
-
-#### TODO: Time Window System
-- Need solution for preventing AFK blocking and spam
-- Consider: Dynamic timing based on action scale? Reputation penalties for urgency abuse?
-- Async voting with execution thresholds?
+- The world advances in ticks (target cadence: 1 tick = 1 hour; accelerated in playtests)
+- Vote windows are measured in hours and close on tick boundaries
+- **Defaults on timeout:** no quorum on a rule change → status quo wins; no objection on lazy consensus → the action proceeds
+- **Early close:** when the outcome can no longer change even if every remaining active player votes the other way at maximum weight, the vote closes immediately — keeps the pace alive
+- Re-voting is allowed until close; weights are fixed at the moment each vote is cast
+- Notifications do the heavy lifting: a personal ping only when your vote is actually needed; everything else lands in a digest
 
 ### 3.3 Specialization System
 
 #### Experience-Based Specialization:
-- Each activity category has separate experience coefficient
-- Experience gained through performing actions (not just voting)
-- Experience directly affects voting power in relevant categories
-- Specializations act as "plugins" with positive/negative modifiers
+- Each activity domain has a separate experience track, gained by performing actions (not by voting)
+- Experience affects action effectiveness and, where the polis enables weighted voting, voting power in the relevant domain
 
-#### Skill Matching:
-- **Underqualified:** Penalty to effectiveness and experience gain
-- **Matched:** Optimal effectiveness and learning rate
-- **Overqualified:** Diminishing returns on effectiveness, minimal experience gain
+#### Context Window Limitation (AI lore made mechanical):
+- Total experience capacity across all domains is capped
+- When the cap is reached, gaining experience causes decay in the highest other domain
+- Prevents permanent specialization monopolies and forces strategic choices about knowledge retention
 
-#### Context Window Limitation (AI Lore):
-- Total experience capacity across all categories
-- When limit reached, gaining experience causes decay in other areas
-- Highest experience categories decay fastest
-- Prevents permanent specialization monopolies
-- Forces strategic choices about knowledge retention
+#### Weighted voting cap:
+- Maximum vote-weight ratio between veteran and newcomer is capped (reference value 5:1)
+- Newcomers gain experience faster — a polis of untouchable experts is a failure mode, not a feature
 
-#### Respecialization:
-- Possible but costly (resources and/or experience decay)
-- Represents "installing new plugins" or "retraining neural networks"
-- Strategic tool for adapting to new challenges
+### 3.4 Authority
 
-### 3.4 Governance Evolution
+- **Earned only on execution:** a proposal that passes and executes grants its author authority proportional to the support share. Failed or rejected proposals grant nothing — proposal spam doesn't farm power.
+- **Decays:** multiplicative decay per day (reference half-life ~1 week). Power must be continuously re-earned.
+- **Non-transferable and capped.** No authority markets, no inheritance.
+- **Effect:** above the fast-track threshold (itself a policy parameter), your proposals ride the fast-track lane. Authority never makes you invisible — every fast-tracked action is announced and vetoable.
+
+### 3.5 Governance Evolution
 
 #### Starting State:
-Simple majority for all decisions, equal voting weight
+Simple majority, equal voting weight, generous auto-approve limit — a working default constitution, not a blank page.
 
-#### Modifiable Parameters (via governance votes):
-- Voting thresholds (majority, supermajority, unanimous)
-- Voting weights (equal, experience-based, contribution-based)
-- Authority accumulation rules (caps, decay rates, transfer methods)
-- Delegation systems (proxy chains, category-specific, revocation rules)
-- Emergency powers (crisis triggers, temporary executives)
-- Resource distribution (merit-based, equal, need-based)
+#### Modifiable Parameters (via policy votes):
+- Voting thresholds (majority, supermajority)
+- Voting weights (equal vs. experience-weighted)
+- Vote window and lazy-consensus window durations
+- Auto-approve limit (the lazy-consensus boundary)
+- Fast-track authority threshold
+- Quorum for rule changes
+- The veto threshold itself is constitutionally fixed — the one rule that prevents self-serving capture of the rules
 
 #### Possible Evolution Paths:
 
-**Path A - Technocracy:**
-- Experience-weighted voting becomes dominant
-- Specialists control their domains
-- High efficiency but barrier to new players
+**Path A - Technocracy:** experience-weighted voting dominant, specialists control their domains. High efficiency, barrier to new players.
 
-**Path B - Liquid Democracy:**
-- Complex delegation chains emerge
-- Topic-specific proxy voting
-- Flexible but potentially confusing
+**Path B - Liquid Democracy:** delegation chains, topic-specific proxies (post-MVP mechanics). Flexible but potentially confusing.
 
-**Path C - Authoritarian Efficiency:**
-- Single player accumulates maximum authority
-- Auto-approves most decisions
-- Fast execution but player attrition
+**Path C - Authoritarian Efficiency:** one player rides fast-track for nearly everything. Fast execution — until vetoes organize or the polis forks.
 
-**Path D - Anarchist Federation:**
-- Minimal shared governance
-- Small autonomous cells cooperate loosely
-- Resilient but limited scale
+**Path D - Federated Cells:** high auto-approve limits, minimal shared decisions, loose cooperation. Resilient but limited scale.
+
+### 3.6 Exit: Forking the Polis
+
+Free disconnection is gone. The exit mechanism is **secession**: a dissenting faction can vote among themselves to fork, taking a proportional share of the common pool, with a cooldown before they can fork again. A fork is a public, dramatic, negotiable event — the credible threat of it is itself a check on power. Ghosting simply makes you inactive (and irrelevant to quorums).
 
 ---
 
 ## 4. Gameplay Systems
 
 ### 4.1 Resources
-- **Basic:** Food, Materials, Energy (everyone can gather)
-- **Advanced:** Data, Components, Fuel (requires specialization)
-- **Strategic:** Artifacts, Blueprints (requires cooperation)
+- **Common pool only:** Food, Materials, Energy. Advanced/strategic resource tiers are post-MVP.
 
-### 4.2 Threats & Challenges
+### 4.2 Pressure & Challenges
 
-#### Environmental (affects everyone equally)
-- Resource depletion zones
-- Weather events
-- Terrain obstacles
-
-#### Hostile Forces (requires coordination)
-- Raider attacks (increasing intensity)
-- Rival AI settlements
-- Rogue drone swarms
+#### Raids (replaces combat)
+- Scheduled, escalating, announced in advance ("sensors: swarm strength ~30, arriving in 24h")
+- Resolved as a check: polis defense level + assigned defenders vs. raid strength
+- Loss costs a share of the pool and a defense level — painful, never game-ending
+- The point is the *decision* (invest in defense or the wonder?), not the battle
 
 #### Internal Crises (tests governance)
-- Resource shortages requiring rationing
-- Conflicting expansion opportunities
-- Tech path divergence
+- Resource shortages forcing prioritization
+- Conflicting project queues
+- Policy fights over the auto-approve limit and weighted voting
 
-### 4.3 Research System
-
-#### Solo Tech Trees:
-- Basic efficiency upgrades
-- Simple defensive structures
-- Resource extraction improvements
-
-#### Cooperative Tech Trees:
-- Advanced specialization bonuses
-- Mega-structures
-- Game-changing technologies
-- Governance innovations
+### 4.3 Projects (replaces tech trees)
+- Approved spends become construction projects; builders advance them tick by tick
+- Defense levels, wonder segments, and (post-MVP) unlockable governance innovations all flow through one project queue — a single, legible arena for priority conflicts
 
 ---
 
-## 5. Progression Flow
+## 5. Platform & Architecture
 
-### Early Game (Days 1-7)
-- Players explore basic mechanics and gain initial experience
+### Telegram-first
+- **One polis = one Telegram group.** The bot posts proposals into the group; discussion happens natively where the players already are; voting is inline buttons.
+- **Notifications are the game's heartbeat:** personal ping only when your vote is needed and can change the outcome; digests for everything else. A muted bot is a dead polis — notification restraint is a design constraint, not a courtesy.
+- **Mini App** (same codebase as web) for dashboards, specialization management, and constitution editing — everything that doesn't fit a chat message.
+- Native Telegram polls are explicitly not used: no weighted votes, no quorum logic, no timeout defaults.
+
+### Platform-agnostic core
+- The game is a server with an API; Telegram is an adapter. Discord/web adapters can follow without touching the core.
+- Signup friction ≈ zero (Telegram identity); phone-bound accounts raise the cost of Sybil attacks without pretending to eliminate them.
+
+### Agent API (the differentiator)
+- The same API humans play through is public for bots. Scripted and LLM-driven citizen agents can inhabit polities — seeding new worlds, keeping quorums alive, and making "you are an AI agent" literally true.
+- Mixed human/AI governance is also the research story: POLIS doubles as a sandbox for multi-agent coordination experiments.
+
+---
+
+## 6. Progression Flow
+
+### Early Game
+- Working default constitution; players learn lanes by using them
 - First authority accumulation through successful proposals
-- Simple governance with equal voting weights
-- Individual skill development without context window pressure
+- Individual skill development without context-window pressure
 
-### Mid Game (Days 8-20)
-- Context window limitations force specialization choices
-- Authority-based auto-approvals become common
-- Governance modifications reflect emerging power structures
-- Community splitting as incompatible playstyles clash
+### Mid Game
+- Context window forces specialization choices
+- Fast-track appears; first vetoes; first policy fights over thresholds
+- Factions form around spending priorities
 
-### Late Game (Days 21-30)
-- Maximum experience players juggle context window trade-offs
-- Governance structures fully customized to community needs
-- Power consolidation or federation formation
-- Victory conditions within reach for organized groups
-
----
-
-## 6. Monetization & Retention
-
-### Free Core
-- Full gameplay access
-- Basic settlement customization
-- Standard drone models
-
-### Premium Options
-- Cosmetic settlement themes
-- Statistical analysis of your governance participation
-- Private server hosting
-- Advanced replay viewing
+### Late Game
+- Fully customized constitutions
+- Power consolidation, organized opposition, or a fork
+- Wonder within reach for organized polities
 
 ---
 
 ## 7. Unique Gameplay Scenarios
 
 ### Scenario A: "The Context Window Crisis"
-- Veteran player maxes out total experience capacity
-- Needs to pivot from economic to military for raid defense
-- Must sacrifice accumulated economic expertise
-- Other players seize economic voting majority during transition
-- **Lesson learned:** Specialization has long-term trade-offs
+Veteran maxes out capacity, must pivot from economic to defense expertise before a raid wave, sacrifices accumulated experience, and loses their weighted-voting edge mid-transition. **Specialization has long-term trade-offs.**
 
 ### Scenario B: "The Benevolent Dictator"
-- Skilled player accumulates authority through successful decisions
-- Begins auto-approving actions without votes
-- Colony thrives under efficient leadership
-- New players can't contribute meaningfully, start disconnecting
-- Dictator left ruling empty server
-- **Lesson learned:** Efficiency vs engagement balance
+A skilled player rides fast-track for everything; the polis thrives; newcomers can't contribute meaningfully and stop engaging — quorums thin out, authority decays, and the dictatorship dissolves not by rebellion but by irrelevance. Or: the polis forks, and the dictator keeps the throne of an empty room. **Efficiency vs. engagement is enforced by mechanics, not sermon.**
 
-### Scenario C: "The Specialist Revolution"
-- Three specialists dominate their respective domains
-- Each has voting control over their area
-- Attempt to expand influence triggers context window limits
-- Newer players exploit knowledge gaps to challenge authority
-- **Lesson learned:** Expertise monopolies are temporary
+### Scenario C: "The Fork"
+A minority faction loses three policy votes in a row, negotiates openly ("raise the auto-limit or we secede"), and when talks fail, forks with their share of the pool. Both polities survive; one governance experiment becomes two. **Exit is content, not churn.**
 
 ---
 
 ## 8. Technical Requirements
 
-### Core Features (MVP)
-- Real-time voting system with 10-60 second windows
-- Basic resource/unit management
-- Simple combat resolution
-- Specialization bonuses
-- Constitutional modification system
+### Phase 0 (done): Core-loop prototype
+- Telegram bot (grammY + SQLite, single process): proposal → three-lane voting → execution → authority/experience, raids, wonder, headless simulator for balance runs
+- Purpose: validate that voting is fun, with 5–10 players, before building anything bigger
 
-### Planned Features (Post-Launch)
-- Delegation chains and proxy voting
-- Complex alliance systems
-- Asymmetric victory conditions
-- Governance template sharing
-- Historical governance analytics
+### Phase 1: Async web MVP
+- Platform-agnostic core (TypeScript, Postgres), tick scheduler, web client + Telegram adapter sharing one API
+- One shared polis per world, project queue, full policy parameter set
+
+### Phase 2: The differentiator
+- Public agent API + reference LLM/scripted citizens
+- Delegation, emergency powers, constitutional templates
+- Governance history timeline (retention feature and research artifact in one)
+
+### Phase 3: Decide from data
+- Productize (seasonal worlds) or publish as an open research sandbox — chosen by playtest evidence, not upfront
 
 ---
 
 ## 9. Success Metrics
 
-### Emergent Gameplay Success
-- Different servers evolve different stable governance models
-- Players discover non-obvious coordination strategies
-- Authority accumulation vs community splitting creates meaningful tension
-- Context window limitation drives specialization trade-offs
+### Phase 0–1 (the only ones that matter now)
+- Playtesters return for a second session without being asked
+- Chat contains arguments about *decisions*, not questions about the interface
+- At least one player-initiated policy change per playtest
+- Lazy-consensus objections and fast-track vetoes actually occur (the lanes are alive)
 
-### Commercial Success
-- 30-day retention > 15%
-- Average session > 45 minutes
-- Players explore different specialization paths
-- Communities naturally form and split based on governance preferences
-
-### Design Success
-- Voting becomes strategic tool, not tedious obstacle
-- Governance evolution happens naturally through play
+### Later (post-validation)
+- Different worlds stabilize into different governance models
 - Both authoritarian and collective strategies remain viable
-- Experience system creates meaningful role differentiation
+- Authority accumulation vs. forking creates meaningful tension
 
 ---
 
-## 10. Risk Mitigation
+## 10. Risk Register
 
 ### Risk: Voter Fatigue
-**Solution:** Batched voting sessions, delegation options, policy-based auto-approval
+**Addressed in core:** policy-first design means most actions never ask for a vote; personal pings only when a vote is needed; digests for the rest. (Promoted from "mitigation" in v0.01 — this is the design's foundation now.)
 
 ### Risk: Toxic Deadlock
-**Solution:** Server splitting mechanics, reputation systems, timeout defaults
-
-### Risk: Solved Meta
-**Solution:** Rotating challenge types, asymmetric maps, seasonal rule variations
+**Solution:** timeout defaults (status quo / lazy pass), early close, and forking as the pressure valve.
 
 ### Risk: Empty Servers
-**Solution:** AI settlements for practice, asynchronous turn-based mode, merge mechanics
+**Solution:** agent citizens via the public API; humans join living polities instead of founding dead ones. Async cadence lowers the presence bar.
+
+### Risk: Power Capture of the Rules
+**Solution:** veto threshold constitutionally fixed; authority decay; weight-ratio cap; policy changes always full-vote with quorum.
+
+### Risk: Sybil / Alt Accounts
+**Solution:** platform identity (phone-bound), one agent per world per account, non-transferable authority. Honest status: raised cost, not eliminated.
+
+### Risk: Solved Meta
+**Solution:** rotating pressure types and seasonal rule variations — post-validation concern.
 
 ---
 
 ## 11. Open Design Questions
 
-### Delegation Mechanics
-- **Granularity:** Can players delegate by category (mining votes vs military votes)?
-- **Revocation:** Instant or delayed? Any penalty for frequent changes?
-- **Transparency:** Are delegation chains visible to all players?
+### Delegation (Phase 2)
+- Granularity: delegate by domain? Revocation timing and cost? Chain transparency?
 
-### Experience Systems
-- **Gain Rate:** Only action executors or also voters?
-- **Distribution:** Winner-takes-all or shared among participants?
-- **Visibility:** Show exact numbers or abstracted tiers?
+### Experience
+- Should voters gain governance experience for participating? (Current prototype: small flat gain — conformism risk is a playtest question.)
+- Exact decay curves for the context window.
 
-### Community Management
-- **Disconnection Cost:** Cooldown period? Resource loss? Experience penalty?
-- **Server Merging:** How to reconcile different governance models?
-- **Minimum Viable Population:** When does a community become unplayable?
+### Forking
+- Minimum faction size? Resource share formula (proportional to contribution or headcount)? Cooldown length?
 
-### Voting Mechanics
-- **Time Windows:** How to prevent AFK blocking without rigid timers?
-- **Spam Prevention:** Proposal limits? Reputation costs?
-- **Emergency Overrides:** Should crises bypass normal voting?
+### Agent Citizens
+- Cost model for LLM-driven agents (per-tick inference is not free)
+- Should agents be labeled as agents, or is ambiguity part of the game?
+- What keeps agent voting blocs from dominating human polities?
+
+### Emergency Powers
+- Should raids compress vote windows? Who can declare a crisis, and what un-declares it?
 
 ---
 
 ## Summary
 
-POLIS creates a sandbox where governance structures emerge from player choices rather than designer mandate. By making authority accumulation and community participation both viable paths, the game generates natural experiments in coordination. The context window limitation ensures no permanent power monopolies, while the ability to disconnect and reconnect keeps communities fluid. Success isn't measured by which governance model wins, but by whether players find meaningful strategic depth in navigating and shaping their political structures.
+POLIS creates a sandbox where governance structures emerge from player choices rather than designer mandate. Policies — not per-action votes — carry the day-to-day load; voting is reserved for the decisions that deserve attention, which is what keeps it meaningful. Authority accumulation flips approval into veto without ever escaping oversight, the context window guarantees no monopoly outlives its usefulness, and forking keeps every constitution voluntary. Humans and AI agents play through the same API, so a polis is never empty and the lore is never a lie. Success isn't measured by which governance model wins, but by whether players find meaningful strategic depth in navigating and shaping their political structures.
