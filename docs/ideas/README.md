@@ -8,6 +8,7 @@ This index keeps possibilities discoverable without turning them into milestones
 | --- | --- | --- |
 | [Telegram as a low-cost playtest interface](telegram-playtest.md) | Parked | Choosing how to test player coordination with little UI investment |
 | [Reusable governance framework](reusable-governance-framework.md) | Parked | Defining domain boundaries, or assessing value beyond the game |
+| [Experiment two candidates](experiment-two-candidates.md) | Parked | The first experiment has produced per-agent results |
 
 ## Ideas retained from earlier designs
 
