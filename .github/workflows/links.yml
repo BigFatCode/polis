@@ -1,0 +1,19 @@
+name: Check links
+
+on:
+  push:
+    paths: ["**/*.md", ".github/workflows/links.yml"]
+  pull_request:
+    paths: ["**/*.md", ".github/workflows/links.yml"]
+
+jobs:
+  links:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check relative links in Markdown
+        uses: lycheeverse/lychee-action@v2
+        with:
+          # Offline: the docs link to each other; external links are not the contract.
+          args: --offline --no-progress --include-fragments './**/*.md'
+          fail: true
