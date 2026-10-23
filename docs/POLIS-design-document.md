@@ -1,5 +1,7 @@
 # POLIS - Game Design Document v0.01
 
+> Historical design proposal. Preserved for its ideas, not an accepted specification or roadmap. Read [current direction](direction.md) for confirmed intent and the [idea index](ideas/README.md) for when to revisit these proposals. The original content follows unchanged.
+
 ## Executive Summary
 
 **Genre:** Experimental Cooperative Strategy / Governance Simulation
