@@ -1,5 +1,17 @@
 # POLIS Proof of Concept
 
+> Unused experiment. The owner confirmed on 2026-10-04 that this implementation has never been used and may be replaced. Its rules and structure impose no requirements on the future game. See [current direction](../../docs/direction.md).
+
+## Evidence and limitations
+
+Code inspection on 2026-10-04 found that Cooperative rejects every other agent's claim on a shared positive-resource node, while Competitive rejects even its own claims. With strict `YES > NO` approval and NPCs that never disconnect, the human cannot collect resources under reachable play. This is a conclusion from code inspection, not a played-session result.
+
+The [prototype instructions](POLIS-POC-INSTRUCTIONS.md) also contain an unresolved inconsistency: their checklist forbids dormant-node claims, while their detailed claim rules omit that restriction. The implementation permits them when resources remain.
+
+`node --check game.js` passed during the repository inspection. No gameplay validation or product validation has been performed in this collaboration. Resolve the relevant rule questions before treating this experiment as evidence for or against the game concept.
+
+The original usage notes follow; they describe the experiment, not the current product specification.
+
 A terminal-based turn-based strategy game demonstrating a voting-based action approval mechanic.
 
 ## Quick Start

@@ -1,5 +1,7 @@
 # POLIS Proof of Concept - Implementation Instructions
 
+> Historical instructions for the existing CLI experiment. Read its [status and limitations](README.md) before using these rules. These instructions are not the future game's specification; unresolved contradictions require a decision rather than an assumed interpretation.
+
 ## Overview
 
 Build a terminal-based turn-based strategy game to test a core mechanic: **actions affecting others require approval by vote from affected parties.**

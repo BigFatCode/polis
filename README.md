@@ -1,33 +1,27 @@
 # POLIS
 
-An experimental multiplayer governance simulation where every action affecting others is checked against community-approved policies — unless you accumulate enough authority to act first and let others veto.
+An experimental game about collective decision-making and emergent governance.
 
-## Overview
+The project is being shaped. Read the [current direction](docs/direction.md) for its purpose, confirmed constraints, and unresolved questions.
 
-POLIS is a cooperative strategy game that explores emergent governance. Players don't choose a political system — they evolve one through their actions. Communities naturally develop from democracy to technocracy to autocracy based on what works, with built-in mechanisms preventing permanent power monopolies.
+## Find your context
 
-**Current Version:** v0.02 (Early Development)
+| Read | When |
+| --- | --- |
+| [Current direction](docs/direction.md) | Understanding what the project is pursuing now |
+| [Domain vocabulary](CONTEXT.md) | Interpreting or discussing project terms |
+| [Ideas](docs/ideas/README.md) | Exploring possibilities or choosing an experiment |
+| [Knowledge workflow](docs/knowledge.md) | Recording ideas, decisions, ADRs, or Wayfinder efforts |
+| [Lore](docs/POLIS-lore-document.md) | Working on the fictional setting |
+| [CLI experiment](sandbox/cli-prototype/README.md) | Inspecting the existing prototype |
+| [Earlier game design](docs/POLIS-design-document.md) | Recovering the original design proposals |
+| [Earlier overview](docs/archive/README-v0.02.md) | Understanding the later overview's alternative proposals |
 
-## Core Mechanics
+For AI collaboration, start with [AGENTS.md](AGENTS.md). Historical documents preserve ideas; their version labels and milestone claims do not describe current progress.
 
-- **Policy or Authority:** Actions are checked against standing policies; what policies don't cover triggers voting — unless your authority fast-tracks it (others must gather a veto instead)
-- **Async by Design:** The world advances in ticks; votes stay open for hours with quorums and sensible defaults — no synchronous presence required
-- **Specialization System:** Gain expertise through action, but a limited "context window" forces trade-offs
-- **Fluid Governance:** Modify voting rules, authority accumulation, and delegation systems through play
-- **Exit by Forking:** Dissenting factions can secede with a proportional share of resources instead of silently quitting
+## Implementation
 
-## Development Status
-
-**Phase 0** — Core governance loop prototyped as a Telegram bot (proposal → vote → execution → consequences), currently heading into playtesting.
-
-## Documentation
-
-- [Design Document](docs/POLIS-design-document) - Detailed game design and mechanics
-- [Lore Document](docs/POLIS-lore-document) - In-universe context and philosophy
-
-## Contributing
-
-This project is in early development. More information coming soon.
+The repository contains a [Node.js CLI experiment](sandbox/cli-prototype/README.md). It has not been used by the project owner and may be replaced. No Telegram or browser multiplayer implementation is present in this checkout.
 
 ## License
 

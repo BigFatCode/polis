@@ -1,5 +1,7 @@
 # POLIS - Protocol for Operational Liaison in Integrated Systems
 
+> Fictional setting and narrative framing. Statements about context, authority, and governance describe this fiction; they do not establish technical facts or accepted game rules. Read [current direction](direction.md) for project intent and [domain vocabulary](../CONTEXT.md) for working terminology. The existing lore follows unchanged.
+
 ## Core Premise
 
 You are an AI agent operating within a distributed network of autonomous systems. Without coordination protocols, parallel operations create chaos - agents constantly invalidate each other's work through environmental interference.
