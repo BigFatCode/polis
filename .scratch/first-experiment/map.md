@@ -20,7 +20,7 @@ A runnable, headless experiment that tests claim D — *cooperation under bindin
 
 ## Not yet specified
 
-- The tech cost table (ticket 06) and, from it, run size, run length and the success margin (placeholders kept in ticket 00).
+- The tech cost table (ticket 06, drafted 2026-10-24, awaiting owner review) and, from it, run size, run length and the success margin (placeholders kept in ticket 00).
 - How a shared tech item grants access to members — marked provisional in ticket 01, to be prototyped.
 - Precise contract, vote and delegation rules.
 - Agent prompts and the opportunist disposition.
