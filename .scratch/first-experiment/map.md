@@ -16,11 +16,12 @@ A runnable, headless experiment that tests claim D — *cooperation under bindin
 ## Decisions so far
 
 - [00 Experiment frame](issues/00-experiment-frame.md) — claim D, one shared world with assigned cooperation, person-vs-person comparison via a contribution ledger, mechanisms in and out, kill signals. Resolved in the grilling session of 2026-10-23/24.
+- [01 Progression system](issues/01-progression-system.md) — three resources, single-domain work per tick, levels 0–3 under a sum cap of 5 with no decay, tech tiers 0–3 gated by level, every tech built with resources plus work ticks, open pooled projects with no expiry. Resolved 2026-10-24.
 
 ## Not yet specified
 
-- The progression system itself: domains, what they produce, project costs, expertise growth and decay numbers. Everything sized below depends on it.
-- Run size, run length and the success margin (retracted as premature on 2026-10-24; placeholders kept in ticket 00).
+- The tech cost table (ticket 06) and, from it, run size, run length and the success margin (placeholders kept in ticket 00).
+- How a shared tech item grants access to members — marked provisional in ticket 01, to be prototyped.
 - Precise contract, vote and delegation rules.
 - Agent prompts and the opportunist disposition.
 - Who builds the harness, in what, and when.

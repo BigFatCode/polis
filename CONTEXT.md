@@ -33,3 +33,9 @@ Terms selected for the [first experiment](docs/direction.md#selected-experiment)
 **Expertise**: A participant's per-domain capability, grown by use. The sum across domains is capped, so raising one decays another; this is the mechanical form of the lore's context limitation.
 
 **Ledger**: The record of every participant's contributions to projects and votes, from which per-participant outcomes are compared.
+
+**Level**: A participant's expertise in one domain, 0 to 3. Decides how well they can use tech of a given tier.
+
+**Tech**: A tool of a domain and tier (1 to 3) that sets output per work tick. Every tech is built as a project: a resource cost plus work ticks in its domain.
+
+**Work**: The one action per tick: a participant's attention spent in a single domain, producing that resource and growing that level.

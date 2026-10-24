@@ -20,7 +20,7 @@ The owner clarified these points on 2026-10-04:
 
 ## Selected experiment
 
-On 2026-10-23/24 the owner settled the frame of the first experiment in a grilling session; the [first-experiment map](../.scratch/first-experiment/map.md) holds the decisions and the open tickets. In short: the claim under test is that cooperation under binding governance outperforms isolation by enough to pay for the governance overhead, which is expected to be annoying rather than fun. One shared world, a build-queue progression loop, soft specialization, direct votes with binding commitments plus delegation with recall; the owner and same-model LLM agents play; results are compared per agent through a contribution ledger. The progression system itself is not yet designed and blocks sizing and thresholds.
+On 2026-10-23/24 the owner settled the frame of the first experiment in a grilling session; the [first-experiment map](../.scratch/first-experiment/map.md) holds the decisions and the open tickets. In short: the claim under test is that cooperation under binding governance outperforms isolation by enough to pay for the governance overhead, which is expected to be annoying rather than fun. One shared world, a build-queue progression loop, soft specialization, direct votes with binding commitments plus delegation with recall; the owner and same-model LLM agents play; results are compared per agent through a contribution ledger. The progression system was settled on 2026-10-24 (ticket 01 in the map); the tech cost table, sizing and thresholds remain open.
 
 ## Questions still open
 

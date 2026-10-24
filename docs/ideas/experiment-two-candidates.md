@@ -19,6 +19,7 @@ The first experiment has produced per-agent results, whichever way they point. E
 - **Raids and shared defense** — threat-driven cooperation; requires an environment system.
 - **Real-time tick cadence and other humans** — whether the overhead judged tolerable with manual ticks survives wall-clock pacing and real attention budgets.
 - **Leader + officers as a distinct mechanism** — only if delegation with recall does not produce leadership on its own.
+- **Split attention across domains in one tick** — the owner's longer vision (for example 30/20/50 committed to specific projects); kept out so the single-domain work action stays crisp.
 
 ## Origins and outcomes
 
