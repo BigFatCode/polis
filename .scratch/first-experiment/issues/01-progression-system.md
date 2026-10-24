@@ -38,7 +38,7 @@ A tick is one fictional hour. The game is turn-based, so real pacing is free to 
 Every tech is a project. The builder pays its resource cost, then puts **work ticks into it in its domain** until it is complete; those ticks are stretch work and train the builder. A shared project is the same mechanism at scale: pooled resources plus pooled work ticks under a contract.
 
 - Each tech's cost is an **individually authored vector of resources plus work ticks per domain**. No formula and no fixed cross-domain share; [ticket 06](06-tech-table.md) drafts the table.
-- **Tier 1 costs own-domain work only**, so the clean slate is escapable alone. Cross-domain need starts at tier 2, which is where the first contracts are expected. First observable of the experiment: at which tick do contracted agents begin building tier 2, versus solo agents.
+- **Tier 1 needs own-domain work ticks only**, so the clean slate is escapable alone by hand-gathering; but its resource cost draws on all three domains from tier 1 up (amended 2026-10-24 during the review of ticket 06: a ladder whose first rung costs only its own resource would push even a solo player into single-domain specialization by design). Cross-domain *work* need starts at tier 2, which is where the first contracts are expected. First observable of the experiment: at which tick do contracted agents begin building tier 2, versus solo agents.
 - **Pooled totals, no expiry, no withdrawal.** An unfinished project is a loss of production, nothing more: locked resources yield nothing until completion, and no further penalty is stacked on top.
 - Projects are **world-visible and open**: any agent may contribute and finish one. Whether a contributor thereby joins the contract and gains access is ticket 04's rule.
 
