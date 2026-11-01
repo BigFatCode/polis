@@ -21,3 +21,21 @@ Language for discussing collective decisions in the game. These definitions iden
 ## Existing experiment
 
 **Node**: A shared resource location to which agents can connect in the CLI experiment. This term does not establish the geography or resource model of the future game.
+
+## First experiment
+
+Terms selected for the [first experiment](docs/direction.md#selected-experiment); their precise rules are open tickets in its map.
+
+**Contract**: A proposal that names a shared project, each member's contribution, and how the output is distributed. Once passed by vote, contributions are enforced by the game.
+
+**Delegation**: Handing one's vote to another participant, revocable at any time. The route by which leadership may emerge.
+
+**Expertise**: A participant's per-domain capability, grown by use. The sum across domains is capped, so raising one decays another; this is the mechanical form of the lore's context limitation.
+
+**Ledger**: The record of every participant's contributions to projects and votes, from which per-participant outcomes are compared.
+
+**Level**: A participant's expertise in one domain, 0 to 3. Decides how well they can use tech of a given tier.
+
+**Tech**: A tool of a domain and tier (1 to 3) that sets output per work tick. Every tech is built as a project: a resource cost plus work ticks in its domain.
+
+**Work**: The one action per tick: a participant's attention spent in a single domain, producing that resource and growing that level.
