@@ -1,15 +1,17 @@
 # 06 Tech table
 
 Type: task
-Status: claimed
+Status: resolved
 Blocked by: 01
-Claimed by: Claude (draft of 2026-10-24, revised the same day after owner review; awaiting acceptance)
+Claimed by: Claude (draft of 2026-10-24, revised after owner review; accepted by the owner on 2026-11-01)
 
 ## Question
 
 Draft the cost table for every tech in the first experiment: three domains × tiers 1–3, each with its output per work tick and its cost vector of resources plus work ticks per domain, authored individually with no formula. Constraints from [ticket 01](01-progression-system.md): tier 1 needs own-domain work ticks only, but resources from all domains from tier 1 up; the numbers must make the owner's generator example literal (a mixed group builds a tier-2 energy tech in about a day of ticks, a solo agent needs far more than the summed time). The owner reviews the draft; the table is data, not a decision, until it has been run.
 
-## Draft
+## Answer
+
+Accepted by the owner on 2026-11-01 as the review version. It remains data: the first run may change any number, and the four assumptions below are the first things to revisit if claim D fails.
 
 ### Owner review, 2026-10-24
 
